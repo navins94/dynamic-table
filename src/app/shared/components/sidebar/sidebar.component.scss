@@ -1,0 +1,29 @@
+.form-wrapper {
+  .filter-form {
+    mat-label {
+      margin-bottom: 5px;
+      display: block;
+    }
+    mat-form-field {
+      width: 100%;
+      .mat-mdc-text-field-wrapper {
+        border-radius: 4px !important;
+      }
+      .mat-mdc-form-field-infix {
+        min-height: 32px;
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+      }
+    }
+    .submit-filter {
+      width: 100%;
+      background-color: #a3bcf9 !important;
+      margin-top: 20px;
+    }
+    .clear-filter {
+      width: 100%;
+      margin-top: 20px;
+      background-color: #ed362b !important;
+    }
+  }
+}

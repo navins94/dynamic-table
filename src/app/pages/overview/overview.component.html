@@ -1,9 +1,30 @@
 <mat-sidenav-container>
   <mat-sidenav mode="side" opened>
-    <app-sidebar />
+    <app-sidebar [columns]="columns" [operators]="operators" />
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <div class="overview">Overview</div>
+    <div class="active-filters">
+      <ng-container *ngIf="filters$ | async as filters">
+        <mat-chip-listbox>
+          <mat-chip *ngFor="let filter of filters; let index = index">
+            {{ filter | tableFilter : operators }}
+            <button matChipRemove (click)="removeFilter(index)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-listbox>
+      </ng-container>
+    </div>
+    <div class="overview">
+      <app-table
+        [columns]="columns"
+        [data]="filteredResults"
+        [totalNumberOfResults]="totalNumberOfResults"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage - 1"
+        (pageChanged)="changePage($event)"
+      />
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

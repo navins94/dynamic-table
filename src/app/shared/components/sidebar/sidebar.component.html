@@ -1,1 +1,66 @@
-<div>Sidebar</div>
+<div class="form-wrapper">
+  <form [formGroup]="filterForm" class="filter-form" (ngSubmit)="onApply()">
+    <div>
+      <mat-label htmlFor="filterColumn">Select column to filter</mat-label>
+      <mat-form-field class="custom-field">
+        <mat-select
+          id="filterColumn"
+          panelClass="select-style"
+          placeholder="Columns"
+          formControlName="column"
+        >
+          <mat-option *ngFor="let column of columns" [value]="column.code">
+            {{ column.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-label htmlFor="filterOperator">Select operator</mat-label>
+      <mat-form-field class="custom-field">
+        <mat-select
+          id="filterOperator"
+          panelClass="select-style"
+          placeholder="Operators"
+          formControlName="operator"
+        >
+          <mat-option
+            *ngFor="let operator of operators"
+            [value]="operator.code"
+          >
+            {{ operator.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-label htmlFor="value">Value to filter</mat-label>
+      <mat-form-field appearance="fill">
+        <input
+          id="value"
+          matInput
+          formControlName="columnValue"
+          placeholder="Enter value"
+        />
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <button
+        mat-raised-button
+        type="submit"
+        class="submit-filter"
+        [disabled]="!filterForm.valid"
+      >
+        Apply Filter
+      </button>
+    </div>
+
+    <div class="form-group" *ngIf="hasFilters">
+      <button mat-raised-button class="clear-filter" (click)="clearFilters()">
+        Clear filters
+      </button>
+    </div>
+  </form>
+</div>
