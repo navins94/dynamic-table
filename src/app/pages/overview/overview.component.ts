@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService, Filter } from 'src/app/core/services/data.service';
+import { DataService } from 'src/app/core/services/data.service';
 import { UtilityService } from 'src/app/core/services/utility.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OperatorsInterface } from 'src/app/core/interfaces/operators.interface';
 import { Observable } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { Filter } from 'src/app/core/interfaces/filter.interface';
 
 @Component({
   selector: 'app-overview',
@@ -17,9 +18,7 @@ export class OverviewComponent implements OnInit {
   filteredResults: any[] = [];
   filters$!: Observable<Filter[]>;
 
-  currentPage = 1;
   totalNumberOfResults: number = 0;
-  pageSize = 10;
 
   filterForm = new FormGroup({
     column: new FormControl('', [Validators.required]),
@@ -74,7 +73,7 @@ export class OverviewComponent implements OnInit {
     });
   }
 
-  headersToObject(headers: string[]): { code: string; name: string }[] {
+  headersToObject(headers: string[]): OperatorsInterface[] {
     return headers.map((header) => {
       return {
         code: header,
@@ -84,10 +83,12 @@ export class OverviewComponent implements OnInit {
   }
 
   changePage(event: PageEvent) {
-    this.currentPage = event.pageIndex + 1;
-    this.pageSize = event.pageSize;
+    this.dataService.setPage(event.pageIndex);
+    this.dataService.setPageSize(event.pageSize);
+    this.dataService.updateFiltersInUrl();
+
     this.dataService
-      .getPaginatedData(this.currentPage, this.pageSize)
+      .getPaginatedData(event.pageIndex, event.pageSize)
       .subscribe((data) => {
         this.results = data;
       });

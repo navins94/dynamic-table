@@ -11,6 +11,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { UtilityService } from 'src/app/core/services/utility.service';
 import { PageEvent } from '@angular/material/paginator';
+import { DataService } from 'src/app/core/services/data.service';
 
 @Component({
   selector: 'app-table',
@@ -22,8 +23,8 @@ export class TableComponent {
   @Input() columns: { code: string; name: string }[] = [];
 
   @Input() totalNumberOfResults: number = 0;
-  @Input() pageSize: number = 10;
-  @Input() pageIndex: number = 0;
+  pageIndex: number = 0;
+  pageSize: number = 10;
 
   @Output() pageChanged = new EventEmitter<PageEvent>();
 
@@ -34,28 +35,18 @@ export class TableComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private utilityService: UtilityService) {}
+  constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.dataLength = this.data && this.data.length ? this.data.length : 0;
-    this.updatePaginator();
+    this.pageIndex = this.dataService.currentPageValue;
+    this.pageSize = this.dataService.pageSizeValue;
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data'] || changes['columns']) {
       this.displayedColumns = this.columns.map((column) => column.code);
       this.dataSource = new MatTableDataSource<any>(this.data);
-    }
-    if (this.paginator) {
-      this.updatePaginator();
-    }
-  }
-
-  private updatePaginator(): void {
-    if (this.paginator) {
-      this.paginator.length = this.totalNumberOfResults;
-      this.paginator.pageSize = this.pageSize;
-      this.paginator.pageIndex = this.pageIndex;
     }
   }
 

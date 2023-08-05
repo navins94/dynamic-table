@@ -1,7 +1,8 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { OperatorsInterface } from 'src/app/core/interfaces/operators.interface';
-import { DataService, Filter } from 'src/app/core/services/data.service';
+import { DataService } from 'src/app/core/services/data.service';
+import { Filter } from 'src/app/core/interfaces/filter.interface';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,7 @@ import { DataService, Filter } from 'src/app/core/services/data.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class SidebarComponent {
-  @Input() columns: { name: string; code: string }[] = [];
+  @Input() columns: OperatorsInterface[] = [];
   @Input() operators: OperatorsInterface[] = [];
   hasFilters: boolean = false;
 
