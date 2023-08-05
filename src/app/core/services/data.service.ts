@@ -99,6 +99,7 @@ export class DataService {
     const filters = this.filtersSubject.getValue();
     filters.push(filter);
     this.filtersSubject.next(filters);
+    this.currentPage = 0;
     this.updateFiltersInUrl();
   }
 
