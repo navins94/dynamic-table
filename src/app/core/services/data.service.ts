@@ -29,6 +29,11 @@ export class DataService {
     this.subscribeToRouteParameters();
   }
 
+  /**
+   * The function subscribes to changes in the route's query parameters, retrieves filters from the
+   * query parameters, updates page details from the query parameters, notifies subscribers of the
+   * filters, and applies and paginates the data.
+   */
   subscribeToRouteParameters(): void {
     this.route.queryParams.subscribe((params) => {
       const filters = this.getFiltersFromQueryParams(params);
@@ -38,6 +43,12 @@ export class DataService {
     });
   }
 
+  /**
+   * The function `getFiltersFromQueryParams` takes in query parameters and returns an array of filters
+   * based on those parameters.
+   * @param {any} params - The `params` parameter is an object that contains query parameters.
+   * @returns an array of Filter objects.
+   */
   getFiltersFromQueryParams(params: any): Filter[] {
     const filters: Filter[] = [];
     let i = 0;
@@ -58,12 +69,24 @@ export class DataService {
     return filters;
   }
 
+  /**
+   * The function updates the page details based on the query parameters, such as the current page
+   * number and page size.
+   * @param {any} params - The `params` parameter is an object that contains query parameters.
+   */
   updatePageDetailsFromQueryParams(params: any): void {
     this.currentPage =
       params['page'] !== undefined ? Number(params['page']) : 0;
     this.pageSize = params['size'] !== undefined ? Number(params['size']) : 10;
   }
 
+  /**
+   * The function `getDataAndColumns` retrieves data from an API, transforms it into a specific format,
+   * and returns an observable containing the data and columns.
+   * @returns The method `getDataAndColumns()` returns an Observable that emits an object with two
+   * properties: `data` and `columns`. The `data` property is an array of any type, and the `columns`
+   * property is an array of strings.
+   */
   getDataAndColumns(): Observable<{ data: any[]; columns: string[] }> {
     this.loadingSubject.next(true);
     return this.http.get<any[]>(this.apiUrl).pipe(
@@ -82,6 +105,14 @@ export class DataService {
     );
   }
 
+  /**
+   * The function returns a paginated subset of data based on the specified page number and page size.
+   * @param {number} page - The page parameter represents the current page number that you want to
+   * retrieve from the paginated data.
+   * @param {number} pageSize - The pageSize parameter determines the number of items to be displayed
+   * on each page of the paginated data.
+   * @returns The method is returning an Observable of an array of any type.
+   */
   getPaginatedData(page: number, pageSize: number): Observable<any[]> {
     this.currentPage = page;
     this.pageSize = pageSize;
@@ -91,10 +122,17 @@ export class DataService {
   setPage(page: number) {
     this.currentPage = page;
   }
+
   setPageSize(page: number) {
     this.pageSize = page;
   }
 
+  /**
+   * The addFilter function adds a filter to the list of filters, updates the current page to 0, and
+   * updates the filters in the URL.
+   * @param {Filter} filter - The "filter" parameter is an object of type "Filter". It represents a
+   * filter that will be added to a list of filters.
+   */
   addFilter(filter: Filter) {
     const filters = this.filtersSubject.getValue();
     filters.push(filter);
@@ -103,6 +141,12 @@ export class DataService {
     this.updateFiltersInUrl();
   }
 
+  /**
+   * The `removeFilter` function removes a filter at a specific index from an array, updates the array,
+   * resets the current page to 0, and updates the filters in the URL.
+   * @param {number} index - The index parameter is the position of the filter that needs to be removed
+   * from the filters array.
+   */
   removeFilter(index: number) {
     const filters = this.filtersSubject.getValue();
     filters.splice(index, 1);
@@ -111,17 +155,27 @@ export class DataService {
     this.updateFiltersInUrl();
   }
 
+  /**
+   * The clearFilters function clears the filters by updating the filters subject and updating the
+   * filters in the URL.
+   */
   clearFilters() {
     this.filtersSubject.next([]);
     this.updateFiltersInUrl();
   }
 
+  /**
+   * The function applies filters to data and then paginates the filtered data.
+   */
   applyAndPaginateData(): void {
     const filteredData = this.applyFilters();
-    console.log(filteredData, 'filteredData');
     this.paginateData(filteredData);
   }
 
+  /**
+   * The function applies a series of filters to a dataset and returns the filtered data.
+   * @returns The filteredData array is being returned.
+   */
   applyFilters(): any[] {
     const filters = this.filtersSubject.getValue();
     let { data: filteredData } = this.dataSubject.getValue();
@@ -133,6 +187,11 @@ export class DataService {
     return filteredData;
   }
 
+  /**
+   * The `paginateData` function takes an array of data, calculates the start and end indices for
+   * pagination based on the current page and page size, and emits the paginated data to a subject.
+   * @param {any[]} data - The `data` parameter is an array of any type of data.
+   */
   paginateData(data: any[]): void {
     this.totalCountSubject.next(data.length);
 
@@ -142,6 +201,15 @@ export class DataService {
     this.filteredDataSubject.next(paginatedData);
   }
 
+  /**
+   * The function applies a filter to an array of data based on the specified filter conditions.
+   * @param {any[]} data - The `data` parameter is an array of objects. Each object represents a data
+   * item that you want to filter.
+   * @param {Filter} filter - The `filter` parameter is an object that contains the following
+   * properties:
+   * @returns The function `applyFilter` returns an array of filtered items based on the provided filter
+   * criteria.
+   */
   applyFilter(data: any[], filter: Filter): any[] {
     return data.filter((item) => {
       switch (filter.operator) {
@@ -163,6 +231,10 @@ export class DataService {
     });
   }
 
+  /**
+   * The function updates the filters in the URL by removing existing filter parameters, adding new
+   * filter parameters, and adding page details to the query parameters.
+   */
   updateFiltersInUrl(): void {
     const filters = this.filtersSubject.getValue();
     const queryParams = this.removeExistingFilterParamsFromQueryParams();
@@ -176,6 +248,13 @@ export class DataService {
     });
   }
 
+  /**
+   * The function adds filter parameters to query parameters in TypeScript.
+   * @param {Filter[]} filters - An array of objects representing the filters to be applied to the
+   * query. Each object in the array should have the following properties:
+   * @param {any} queryParams - An object representing the query parameters that will be sent in a
+   * request.
+   */
   addFilterParamsToQueryParams(filters: Filter[], queryParams: any): void {
     filters.forEach((filter, index) => {
       queryParams[`column${index}`] = filter.column;
@@ -184,6 +263,12 @@ export class DataService {
     });
   }
 
+  /**
+   * The function adds page details (current page and page size) to the query parameters.
+   * @param {any} queryParams - The `queryParams` parameter is an object that represents the query
+   * parameters of a URL. It typically contains key-value pairs where the key represents the parameter
+   * name and the value represents the parameter value.
+   */
   addPageDetailsToQueryParams(queryParams: any): void {
     if (this.currentPage !== 0) {
       queryParams['page'] = this.currentPage;
@@ -193,6 +278,10 @@ export class DataService {
     }
   }
 
+  /**
+   * The function removes specific filter parameters from the query parameters object.
+   * @returns the modified `queryParams` object after removing certain keys.
+   */
   removeExistingFilterParamsFromQueryParams(): any {
     const queryParams: any = { ...this.route.snapshot.queryParams };
 

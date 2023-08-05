@@ -110,6 +110,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * The function "headersToObject" takes an array of strings representing headers and returns an array
+   * of objects with "code" and "name" properties, where the "name" property is formatted using a
+   * utility service.
+   * @param {string[]} headers - An array of strings representing headers.
+   * @returns an array of objects of type OperatorsInterface.
+   */
   headersToObject(headers: string[]): OperatorsInterface[] {
     return headers.map((header) => {
       return {
@@ -119,6 +126,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * The function "changePage" updates the page index and page size in the data service, updates the
+   * filters in the URL, and retrieves paginated data based on the updated page index and page size.
+   * @param {PageEvent} event - The event parameter is of type PageEvent. It contains information about
+   * the page index and page size that triggered the changePage event.
+   */
   changePage(event: PageEvent) {
     this.dataService.setPage(event.pageIndex);
     this.dataService.setPageSize(event.pageSize);
@@ -130,6 +143,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .subscribe((data) => (this.results = data));
   }
 
+  /**
+   * The removeFilter function removes a filter from the data service based on the given index.
+   * @param {number} index - The index parameter is a number that represents the position of the filter
+   * in an array or list.
+   */
   removeFilter(index: number) {
     this.dataService.removeFilter(index);
   }

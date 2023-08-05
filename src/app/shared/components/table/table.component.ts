@@ -49,6 +49,16 @@ export class TableComponent {
     }
   }
 
+  /**
+   * The function `getLinkText` takes a `columnCode` parameter and returns a corresponding link text
+   * based on the value of `columnCode`.
+   * @param {string} columnCode - The `columnCode` parameter is a string that represents the code for a
+   * specific column in a table or data structure.
+   * @returns The function `getLinkText` returns a string value. The specific string value that is
+   * returned depends on the value of the `columnCode` parameter. If `columnCode` is equal to 'url',
+   * the function returns 'Link'. If `columnCode` is equal to 'image', the function returns 'See
+   * image'. If `columnCode` is equal to 'image_additional', the function
+   */
   getLinkText(columnCode: string): string {
     switch (columnCode) {
       case 'url':
