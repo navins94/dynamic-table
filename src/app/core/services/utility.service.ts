@@ -18,19 +18,4 @@ export class UtilityService {
     });
     return operatorName;
   }
-
-  getLinkText(columnCode: string): string {
-    switch (columnCode) {
-      case 'url':
-        return 'Link';
-      case 'image':
-        return 'See image';
-      case 'image_additional':
-        return 'See additional image';
-      case 'source_video':
-        return 'Video';
-      default:
-        return '';
-    }
-  }
 }

@@ -21,8 +21,16 @@ mat-sidenav-content {
   padding: 2em;
   .overview {
     background-color: #fff;
+    position: relative;
+    min-height: 100vh;
   }
   mat-chip {
     background-color: #fff;
+  }
+  mat-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }

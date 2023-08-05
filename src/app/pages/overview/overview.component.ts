@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { UtilityService } from 'src/app/core/services/utility.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OperatorsInterface } from 'src/app/core/interfaces/operators.interface';
-import { Observable } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { Filter } from 'src/app/core/interfaces/filter.interface';
 
@@ -12,11 +13,14 @@ import { Filter } from 'src/app/core/interfaces/filter.interface';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
+  private readonly onDestroy = new Subject<void>();
+
   results: any[] = [];
   columns: any[] = [];
   filteredResults: any[] = [];
   filters$!: Observable<Filter[]>;
+  loading = false;
 
   totalNumberOfResults: number = 0;
 
@@ -61,16 +65,49 @@ export class OverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataService.getDataAndColumns().subscribe(({ data, columns }) => {
-      this.results = data;
-      this.columns = this.headersToObject(columns);
-    });
-    this.dataService.filteredData.subscribe((filteredData) => {
-      this.filteredResults = filteredData;
-    });
-    this.dataService.totalCount.subscribe((count) => {
-      this.totalNumberOfResults = count;
-    });
+    this.loadDataAndColumns();
+    this.subscribeToFilteredData();
+    this.subscribeToTotalCount();
+    this.subscribeToLoadingState();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy.next();
+    this.onDestroy.complete();
+  }
+
+  private loadDataAndColumns(): void {
+    this.dataService
+      .getDataAndColumns()
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(({ data, columns }) => {
+        this.results = data;
+        this.columns = this.headersToObject(columns);
+      });
+  }
+
+  private subscribeToFilteredData(): void {
+    this.dataService.filteredData
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe((filteredData) => {
+        this.filteredResults = filteredData;
+      });
+  }
+
+  private subscribeToTotalCount(): void {
+    this.dataService.totalCount
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe((count) => {
+        this.totalNumberOfResults = count;
+      });
+  }
+
+  private subscribeToLoadingState(): void {
+    this.dataService.isLoading
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe((isLoading) => {
+        this.loading = isLoading;
+      });
   }
 
   headersToObject(headers: string[]): OperatorsInterface[] {
@@ -89,10 +126,10 @@ export class OverviewComponent implements OnInit {
 
     this.dataService
       .getPaginatedData(event.pageIndex, event.pageSize)
-      .subscribe((data) => {
-        this.results = data;
-      });
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe((data) => (this.results = data));
   }
+
   removeFilter(index: number) {
     this.dataService.removeFilter(index);
   }

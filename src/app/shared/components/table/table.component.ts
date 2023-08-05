@@ -9,7 +9,6 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { UtilityService } from 'src/app/core/services/utility.service';
 import { PageEvent } from '@angular/material/paginator';
 import { DataService } from 'src/app/core/services/data.service';
 
@@ -21,8 +20,8 @@ import { DataService } from 'src/app/core/services/data.service';
 export class TableComponent {
   @Input() data: any[] = [];
   @Input() columns: { code: string; name: string }[] = [];
-
   @Input() totalNumberOfResults: number = 0;
+
   pageIndex: number = 0;
   pageSize: number = 10;
 

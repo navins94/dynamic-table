@@ -23,7 +23,9 @@
     .clear-filter {
       width: 100%;
       margin-top: 20px;
-      background-color: #ed362b !important;
+      background-color: transparent;
+      border: 1px solid #ed362b;
+      color: #fff;
     }
   }
 }

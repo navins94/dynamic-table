@@ -13,6 +13,7 @@ import { TableModule } from 'src/app/shared/components/table/table.module';
 import { TableFilterPipe } from 'src/app/core/pipes/tableFilter.pipe';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [OverviewComponent, SidebarComponent, TableFilterPipe],
@@ -29,6 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatChipsModule,
     MatIconModule,
+    MatProgressSpinnerModule,
   ],
   exports: [OverviewComponent],
 })
