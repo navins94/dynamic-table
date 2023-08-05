@@ -187,6 +187,8 @@ export class DataService {
   addPageDetailsToQueryParams(queryParams: any): void {
     if (this.currentPage !== 0) {
       queryParams['page'] = this.currentPage;
+    }
+    if (this.pageSize !== 10) {
       queryParams['size'] = this.pageSize;
     }
   }
