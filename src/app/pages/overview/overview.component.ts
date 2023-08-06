@@ -17,11 +17,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private readonly onDestroy = new Subject<void>();
 
   results: any[] = [];
-  columns: any[] = [];
+  columns: OperatorsInterface[] = [];
+  displyedColumns: any[] = [];
   filteredResults: any[] = [];
   filters$!: Observable<Filter[]>;
   loading = false;
-
+  selectedColumns: OperatorsInterface[] = [];
+  visibleColumns: number = 6;
   totalNumberOfResults: number = 0;
 
   filterForm = new FormGroup({
@@ -82,6 +84,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .subscribe(({ data, columns }) => {
         this.results = data;
         this.columns = this.headersToObject(columns);
+        this.selectedColumns = this.columns.slice(0, this.visibleColumns);
       });
   }
 
