@@ -89,6 +89,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dataService.filteredData
       .pipe(takeUntil(this.onDestroy))
       .subscribe((filteredData) => {
+        console.log(filteredData, 'filteredData');
         this.filteredResults = filteredData;
       });
   }
@@ -126,6 +127,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   changePage(event: PageEvent) {
     this.dataService.setPage(event.pageIndex);
     this.dataService.setPageSize(event.pageSize);
+    this.dataService.applyAndPaginateData();
     this.dataService.updateFiltersInUrl();
   }
 

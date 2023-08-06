@@ -30,16 +30,14 @@ export class DataService {
   }
 
   /**
-   * The function subscribes to changes in the route's query parameters, retrieves filters from the
-   * query parameters, updates page details from the query parameters, notifies subscribers of the
-   * filters, and applies and paginates the data.
+   * The function subscribes to changes in the route's query parameters, extracts filters from the
+   * parameters, updates page details based on the parameters, and emits the filters to a subject.
    */
   subscribeToRouteParameters(): void {
     this.route.queryParams.subscribe((params) => {
       const filters = this.getFiltersFromQueryParams(params);
       this.updatePageDetailsFromQueryParams(params);
       this.filtersSubject.next(filters);
-      this.applyAndPaginateData();
     });
   }
 
@@ -124,6 +122,7 @@ export class DataService {
     filters.push(filter);
     this.filtersSubject.next(filters);
     this.currentPage = 0;
+    this.applyAndPaginateData();
     this.updateFiltersInUrl();
   }
 
@@ -138,6 +137,7 @@ export class DataService {
     filters.splice(index, 1);
     this.filtersSubject.next(filters);
     this.currentPage = 0;
+    this.applyAndPaginateData();
     this.updateFiltersInUrl();
   }
 
@@ -147,6 +147,7 @@ export class DataService {
    */
   clearFilters() {
     this.filtersSubject.next([]);
+    this.applyAndPaginateData();
     this.updateFiltersInUrl();
   }
 
