@@ -67,7 +67,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadDataAndColumns();
     this.subscribeToFilteredData();
-    this.subscribeToTotalCount();
     this.subscribeToLoadingState();
   }
 
@@ -91,14 +90,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy))
       .subscribe((filteredData) => {
         this.filteredResults = filteredData;
-      });
-  }
-
-  private subscribeToTotalCount(): void {
-    this.dataService.totalCount
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe((count) => {
-        this.totalNumberOfResults = count;
       });
   }
 
@@ -136,11 +127,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dataService.setPage(event.pageIndex);
     this.dataService.setPageSize(event.pageSize);
     this.dataService.updateFiltersInUrl();
-
-    this.dataService
-      .getPaginatedData(event.pageIndex, event.pageSize)
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe((data) => (this.results = data));
   }
 
   /**

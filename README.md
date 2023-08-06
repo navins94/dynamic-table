@@ -36,11 +36,12 @@ Then navigate to `http://localhost:4200/` in your browser.
 ## Possible Improvements
 
 1. **Error Handling**: Right now, the application doesn't handle errors from the HTTP request. In the future, we could add error handling and user notifications for such events.
-2. **Better Form Validation**: We can improve form validation ex - checking if same filter is already added or not
-3. **Better interfaces**: We can add proper interfaces
-4. **Better pagination**: We can improve the pagination UI/UX by providing numbers instead of prev, next page
-5. **Additional Functionality**: Features like sorting and multi-filtering on the same column could be added.
-6. **Responsiveness**: Make the application responsive for various screen sizes and devices.
-7. **Accessibility**: Ensure the application meets accessibility standards to cater to all users, including those with disabilities.
-8. **Testing**: The application currently lacks automated tests. Adding unit and end-to-end tests would ensure that the application behaves as expected as new features are added or changes are made.
-9. **Review the codebase**: for any areas of improvement, code duplication, or optimization opportunities.
+2. **Column Visibility Toggle**: As we are unsure how many columns will be there better approach would be to add coloum toggle so that we can show only selected column data
+3. **Better Form Validation**: We can improve form validation ex - checking if same filter is already added or not
+4. **Better interfaces**: We can add proper interfaces
+5. **Better pagination**: We can improve the pagination UI/UX by providing numbers instead of prev, next page
+6. **Additional Functionality**: Features like sorting and multi-filtering on the same column could be added.
+7. **Responsiveness**: Make the application responsive for various screen sizes and devices.
+8. **Accessibility**: Ensure the application meets accessibility standards to cater to all users, including those with disabilities.
+9. **Testing**: The application currently lacks automated tests. Adding unit and end-to-end tests would ensure that the application behaves as expected as new features are added or changes are made.
+10. **Review the codebase**: for any areas of improvement, code duplication, or optimization opportunities.

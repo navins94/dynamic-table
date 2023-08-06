@@ -21,7 +21,6 @@
         *ngIf="!loading"
         [columns]="columns"
         [data]="filteredResults"
-        [totalNumberOfResults]="totalNumberOfResults"
         (pageChanged)="changePage($event)"
       />
       <mat-spinner *ngIf="loading"></mat-spinner>

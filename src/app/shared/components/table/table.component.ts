@@ -20,33 +20,32 @@ import { DataService } from 'src/app/core/services/data.service';
 export class TableComponent {
   @Input() data: any[] = [];
   @Input() columns: { code: string; name: string }[] = [];
-  @Input() totalNumberOfResults: number = 0;
-
-  pageIndex: number = 0;
-  pageSize: number = 10;
 
   @Output() pageChanged = new EventEmitter<PageEvent>();
 
   dataSource!: MatTableDataSource<any>;
   displayedColumns!: string[];
-  dataLength: number = 0;
+  pageIndex!: number;
+  pageSize!: number;
+  dataLength!: number;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private dataService: DataService) {}
 
-  ngOnInit(): void {
-    this.dataLength = this.data && this.data.length ? this.data.length : 0;
-    this.pageIndex = this.dataService.currentPageValue;
-    this.pageSize = this.dataService.pageSizeValue;
-  }
-
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data'] || changes['columns']) {
-      this.displayedColumns = this.columns.map((column) => column.code);
-      this.dataSource = new MatTableDataSource<any>(this.data);
+      this.initializeTable();
     }
+  }
+
+  private initializeTable(): void {
+    this.dataLength = this.dataService.dataLengthValue;
+    this.pageIndex = this.dataService.currentPageValue;
+    this.pageSize = this.dataService.pageSizeValue;
+    this.displayedColumns = this.columns.map((column) => column.code);
+    this.dataSource = new MatTableDataSource<any>(this.data);
   }
 
   /**

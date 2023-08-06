@@ -18,7 +18,7 @@ export class DataService {
 
   private currentPage = 0;
   private pageSize = 10;
-  private totalCountSubject = new BehaviorSubject<number>(0);
+  private dataLength = 0;
   private loadingSubject = new BehaviorSubject<boolean>(false);
 
   constructor(
@@ -105,20 +105,6 @@ export class DataService {
     );
   }
 
-  /**
-   * The function returns a paginated subset of data based on the specified page number and page size.
-   * @param {number} page - The page parameter represents the current page number that you want to
-   * retrieve from the paginated data.
-   * @param {number} pageSize - The pageSize parameter determines the number of items to be displayed
-   * on each page of the paginated data.
-   * @returns The method is returning an Observable of an array of any type.
-   */
-  getPaginatedData(page: number, pageSize: number): Observable<any[]> {
-    this.currentPage = page;
-    this.pageSize = pageSize;
-    return this.filteredDataSubject.asObservable();
-  }
-
   setPage(page: number) {
     this.currentPage = page;
   }
@@ -193,8 +179,7 @@ export class DataService {
    * @param {any[]} data - The `data` parameter is an array of any type of data.
    */
   paginateData(data: any[]): void {
-    this.totalCountSubject.next(data.length);
-
+    this.dataLength = data.length;
     const start = this.currentPage * this.pageSize;
     const paginatedData = data.slice(start, start + this.pageSize);
 
@@ -308,10 +293,6 @@ export class DataService {
     return this.filtersSubject.asObservable();
   }
 
-  get totalCount(): Observable<number> {
-    return this.totalCountSubject.asObservable();
-  }
-
   get filteredData(): Observable<any[]> {
     return this.filteredDataSubject.asObservable();
   }
@@ -322,5 +303,9 @@ export class DataService {
 
   get pageSizeValue(): number {
     return this.pageSize;
+  }
+
+  get dataLengthValue(): number {
+    return this.dataLength;
   }
 }
