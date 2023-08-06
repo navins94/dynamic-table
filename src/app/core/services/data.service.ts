@@ -147,6 +147,7 @@ export class DataService {
    */
   clearFilters() {
     this.filtersSubject.next([]);
+    this.currentPage = 0;
     this.applyAndPaginateData();
     this.updateFiltersInUrl();
   }
