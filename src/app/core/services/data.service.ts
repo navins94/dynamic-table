@@ -90,7 +90,7 @@ export class DataService {
     return this.http.get<any[]>(this.apiUrl).pipe(
       map((data) => {
         const results: any[] = [];
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, value] of Object.values(data)) {
           results.push(value);
         }
         const columns = results.length > 0 ? Object.keys(results[0]) : [];

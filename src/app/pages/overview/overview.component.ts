@@ -92,7 +92,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dataService.filteredData
       .pipe(takeUntil(this.onDestroy))
       .subscribe((filteredData) => {
-        console.log(filteredData, 'filteredData');
         this.filteredResults = filteredData;
       });
   }
