@@ -19,7 +19,6 @@ This application showcases a data table using Angular and Angular Material. It f
 ## External Dependencies
 
 - **Angular Material**: Angular Material provides a set of reusable and accessible UI components based on Material Design. We used it to create a table, paginator, and spinner in this project.
-- **RxJS**: RxJS is a library for composing asynchronous and event-based programs by using observable sequences. It's used extensively in Angular applications, and here it's used for handling asynchronous data and event streams.
 
 ## Development server
 
