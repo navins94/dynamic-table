@@ -119,6 +119,16 @@ export class DataService {
    */
   addFilter(filter: Filter) {
     const filters = this.filtersSubject.getValue();
+    const filterExists = filters.some(
+      (existingFilter) =>
+        existingFilter.column === filter.column &&
+        existingFilter.operator === filter.operator &&
+        existingFilter.columnValue === filter.columnValue
+    );
+    if (filterExists) {
+      window.alert('The same filter already exists!');
+      return;
+    }
     filters.push(filter);
     this.filtersSubject.next(filters);
     this.currentPage = 0;
