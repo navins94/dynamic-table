@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OverviewComponent } from './overview.component';
+import { OverviewRoutingModule } from './overview-routing.module';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule } from '@angular/common/http';
@@ -19,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   declarations: [OverviewComponent, SidebarComponent, TableFilterPipe],
   imports: [
     CommonModule,
+    OverviewRoutingModule,
     TableModule,
     HttpClientModule,
     MatSidenavModule,
