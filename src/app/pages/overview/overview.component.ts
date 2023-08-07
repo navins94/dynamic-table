@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { DataService } from 'src/app/core/services/data.service';
 import { UtilityService } from 'src/app/core/services/utility.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -69,7 +69,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadDataAndColumns();
     this.subscribeToFilteredData();
-    this.subscribeToLoadingState();
   }
 
   ngOnDestroy(): void {
@@ -77,10 +76,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
+  /**
+   * The function `loadDataAndColumns` sets the `loading` flag to true, calls a data service to
+   * retrieve data and columns, and then updates the component's `results`, `columns`, and
+   * `selectedColumns` properties based on the received data.
+   */
   private loadDataAndColumns(): void {
+    this.loading = true;
     this.dataService
       .getDataAndColumns()
-      .pipe(takeUntil(this.onDestroy))
+      .pipe(
+        takeUntil(this.onDestroy),
+        finalize(() => (this.loading = false))
+      )
       .subscribe(({ data, columns }) => {
         this.results = data;
         this.columns = this.headersToObject(columns);
@@ -93,14 +101,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy))
       .subscribe((filteredData) => {
         this.filteredResults = filteredData;
-      });
-  }
-
-  private subscribeToLoadingState(): void {
-    this.dataService.isLoading
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe((isLoading) => {
-        this.loading = isLoading;
       });
   }
 

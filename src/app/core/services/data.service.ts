@@ -3,7 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Filter } from 'src/app/core/interfaces/filter.interface';
+import {
+  Filter,
+  DataAndColumns,
+} from 'src/app/core/interfaces/filter.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +22,6 @@ export class DataService {
   private currentPage = 0;
   private pageSize = 10;
   private dataLength = 0;
-  private loadingSubject = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -79,28 +81,26 @@ export class DataService {
   }
 
   /**
-   * The function `getDataAndColumns` retrieves data from an API, transforms it into a specific format,
-   * and returns an observable containing the data and columns.
-   * @returns The method `getDataAndColumns()` returns an Observable that emits an object with two
-   * properties: `data` and `columns`. The `data` property is an array of any type, and the `columns`
-   * property is an array of strings.
+   * The function retrieves data from an API, maps the response to a specific format, and emits the data
+   * while applying pagination.
+   * @returns The function `getDataAndColumns()` returns an Observable of type `DataAndColumns`.
    */
-  getDataAndColumns(): Observable<{ data: any[]; columns: string[] }> {
-    this.loadingSubject.next(true);
-    return this.http.get<any[]>(this.apiUrl).pipe(
-      map((data) => {
-        const results: any[] = [];
-        for (const value of Object.values(data)) {
-          results.push(value);
-        }
+  getDataAndColumns(): Observable<DataAndColumns> {
+    return this.http.get<Record<string, unknown>[]>(this.apiUrl).pipe(
+      map((responseData): DataAndColumns => {
+        const results: Record<string, unknown>[] = Object.values(responseData);
         const columns = results.length > 0 ? Object.keys(results[0]) : [];
-        const result = { data: results, columns };
-        this.dataSubject.next(result);
-        this.applyAndPaginateData();
-        return result;
+        return { data: results, columns };
       }),
-      tap(() => this.loadingSubject.next(false))
+      tap((result) => {
+        this.emitData(result);
+        this.applyAndPaginateData();
+      })
     );
+  }
+
+  private emitData(dataAndColumns: DataAndColumns): void {
+    this.dataSubject.next(dataAndColumns);
   }
 
   setPage(page: number) {
@@ -285,10 +285,6 @@ export class DataService {
     });
 
     return queryParams;
-  }
-
-  get isLoading(): Observable<boolean> {
-    return this.loadingSubject.asObservable();
   }
 
   get activeFilters(): Observable<Filter[]> {
