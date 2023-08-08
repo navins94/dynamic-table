@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import {
   Filter,
@@ -11,17 +11,19 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class DataService {
+export class DataService implements OnDestroy {
   private apiUrl = 'assets/table_data.json';
   private filtersSubject = new BehaviorSubject<Filter[]>([]);
-  private dataSubject = new BehaviorSubject<{ data: any[]; columns: string[] }>(
-    { data: [], columns: [] }
-  );
+  private dataStore: { data: any[]; columns: string[] } = {
+    data: [],
+    columns: [],
+  };
   private filteredDataSubject = new BehaviorSubject<any[]>([]);
 
   private currentPage = 0;
   private pageSize = 10;
   private dataLength = 0;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private http: HttpClient,
@@ -36,11 +38,13 @@ export class DataService {
    * parameters, updates page details based on the parameters, and emits the filters to a subject.
    */
   subscribeToRouteParameters(): void {
-    this.route.queryParams.subscribe((params) => {
-      const filters = this.getFiltersFromQueryParams(params);
-      this.updatePageDetailsFromQueryParams(params);
-      this.filtersSubject.next(filters);
-    });
+    this.route.queryParams
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((params) => {
+        const filters = this.getFiltersFromQueryParams(params);
+        this.updatePageDetailsFromQueryParams(params);
+        this.filtersSubject.next(filters);
+      });
   }
 
   /**
@@ -93,14 +97,10 @@ export class DataService {
         return { data: results, columns };
       }),
       tap((result) => {
-        this.emitData(result);
+        this.dataStore = result;
         this.applyAndPaginateData();
       })
     );
-  }
-
-  private emitData(dataAndColumns: DataAndColumns): void {
-    this.dataSubject.next(dataAndColumns);
   }
 
   setPage(page: number) {
@@ -176,7 +176,7 @@ export class DataService {
    */
   applyFilters(): any[] {
     const filters = this.filtersSubject.getValue();
-    let { data: filteredData } = this.dataSubject.getValue();
+    let filteredData = this.dataStore.data;
 
     filters.forEach((filter) => {
       filteredData = this.applyFilter(filteredData, filter);
@@ -315,5 +315,10 @@ export class DataService {
 
   get dataLengthValue(): number {
     return this.dataLength;
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
