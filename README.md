@@ -13,7 +13,7 @@ This application showcases a data table using Angular and Angular Material. It f
 
 1. We created an Angular service `DataService` that handles data fetching, pagination, filtering, and synchronization with URL query parameters.
 2. The Angular component `OverviewComponent` subscribes to data updates from `DataService` and displays the data in an Angular Material table.
-3. We used Angular's Router and ActivatedRoute to manage the application's state in the URL. This allows for direct linking to a specific set of filters and page. We added this so that user can easily bookmark page and open again with filtering
+3. We used Angular's Router and ActivatedRoute to manage the application's data what I mean is based on the qurey param we will fetch data from api on production but for this case study we used to filter data as well as show active filters
 4. The table's structure and the way cells are displayed are dynamically generated based on the data received. This includes handling specific keys as URLs.
 
 ## External Dependencies
